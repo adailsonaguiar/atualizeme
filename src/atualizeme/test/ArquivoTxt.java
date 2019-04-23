@@ -16,7 +16,7 @@ import java.util.List;
 
 import atualizeme.model.Arquivo;
 
-class ArquivoTxt {
+public class ArquivoTxt {
 
 	private static String caminho = System.getProperty("user.home") + File.separator + "oias" + File.separator;
 
@@ -29,7 +29,11 @@ class ArquivoTxt {
 		List<Arquivo> lista = readFile(caminho + "teste2.txt");
 		List<Arquivo> lista2 = readFile(caminho + "teste.txt");
 
-		comparaListas(lista, lista2);
+		List<Arquivo> lista3 = comparaListas(lista, lista2);
+
+		for (int i = 0; i < lista3.size(); i++) {
+			System.out.println(lista3.get(i).getPathFile());
+		}
 
 	}
 
@@ -51,16 +55,22 @@ class ArquivoTxt {
 		write.close();
 	}
 
-	public static List<Arquivo> readFile(String pathFile) throws IOException {
+	public static List<Arquivo> readFile(String pathFile) {
+
 		List<Arquivo> content = new ArrayList<>();
-		FileReader arq = new FileReader(pathFile);
-		BufferedReader buffer = new BufferedReader(arq);
-		String linha = null;
+		try {
+			FileReader arq = new FileReader(pathFile);
+			BufferedReader buffer = new BufferedReader(arq);
+			String linha = null;
 
-		while ((linha = buffer.readLine()) != null) {
+			while ((linha = buffer.readLine()) != null) {
 
-			String[] dados = linha.split(";");
-			content.add(new Arquivo(dados[0].toString(), dados[1].toString()));
+				String[] dados = linha.split(";");
+				content.add(new Arquivo(dados[0].toString(), dados[1].toString()));
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		return content;
 	}
@@ -105,19 +115,22 @@ class ArquivoTxt {
 		return output;
 	}
 
-	public static void comparaListas(List<Arquivo> lista, List<Arquivo> lista2) {
+	public static List<Arquivo> comparaListas(List<Arquivo> lista, List<Arquivo> lista2) {
+		List<Arquivo> arqEnvio = new ArrayList<>();
 		for (int i = 0; i < lista.size(); i++) {
 			for (int j = 0; j < lista2.size(); j++) {
 				if (lista.get(i).getPathFile().equals(lista2.get(j).getPathFile())) {
 					if (!lista.get(i).getHashFile().equals(lista2.get(j).getHashFile())) {
-						System.out.println("Atualizando arquivo!");
 						// Chama método que atualiza arquivo ..
 						// ..passando o caminho do arquivo "lista.get(i).getPathFile()"
 
 						// Atualiza arquivo TXT do cliente ..
+						arqEnvio.add(new Arquivo(lista.get(i).getPathFile(), lista.get(i).getHashFile()));
+
 					}
 				}
 			}
 		}
+		return arqEnvio;
 	}
 }

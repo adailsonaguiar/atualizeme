@@ -14,18 +14,28 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
+
 import javax.ws.rs.core.Response.ResponseBuilder;
+
+import atualizeme.model.Arquivo;
+import atualizeme.test.*;
 
 @Path("update")
 public class Update {
 
+	private static String caminho = System.getProperty("user.home") + File.separator + "oias" + File.separator;
+
 	public static void main(String[] args) {
-		/*
-		 * try { geraHash(new File("/home/adailson/aaa/aaa.txt")); } catch
-		 * (NoSuchAlgorithmException e) { // TODO Auto-generated catch block
-		 * e.printStackTrace(); } catch (FileNotFoundException e) { // TODO
-		 * Auto-generated catch block e.printStackTrace(); }
-		 */
+
+		List<Arquivo> lista = ArquivoTxt.readFile(caminho + "teste2.txt");
+		List<Arquivo> lista2 = ArquivoTxt.readFile(caminho + "teste.txt");
+
+		List<Arquivo> lista3 = ArquivoTxt.comparaListas(lista, lista2);
+
+		for (int i = 0; i < lista3.size(); i++) {
+			System.out.println(lista3.get(i).getPathFile());
+		}
 	}
 
 	@GET
@@ -35,12 +45,18 @@ public class Update {
 	}
 
 	@javax.ws.rs.GET
-	@Path("/get/{hash}")
+	@Path("/get")
 	@javax.ws.rs.Produces({ "application/json" })
-	public Response getArquivos(@PathParam("hash") String hash) throws NoSuchAlgorithmException, FileNotFoundException {
-		String hashArquivo = geraHash(new File("/home/adailson/aaa/aaa.txt"));
-		if (hash.equals(hashArquivo)) {
-			File file = new File("/home/adailson/aaa/aaa.txt");
+	public Response getArquivos() throws NoSuchAlgorithmException, FileNotFoundException {
+
+		List<Arquivo> lista = ArquivoTxt.readFile(caminho + "teste2.txt");
+		List<Arquivo> lista2 = ArquivoTxt.readFile(caminho + "teste.txt");
+
+		List<Arquivo> lista3 = ArquivoTxt.comparaListas(lista, lista2);
+
+		for (int i = 0; i < lista3.size(); i++) {
+//			System.out.println(lista3.get(i).getPathFile());
+			File file = new File(lista3.get(i).getPathFile());
 			ResponseBuilder response = Response.ok((Object) file);
 			response.header("Content-Disposition", "attachment; filename=\"file_from_server.txt\"");
 			return response.build();
