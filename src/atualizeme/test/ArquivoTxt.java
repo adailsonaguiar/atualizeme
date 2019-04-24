@@ -22,18 +22,20 @@ public class ArquivoTxt {
 
 	public static void main(String[] args) throws NoSuchAlgorithmException, IOException {
 
-//		List<?> lista = listFileTree(new File(caminho));
-//		for (int i = 0; i < lista.size(); i++) {
-//			writeFile(caminho, "teste.txt", lista.get(i).toString(), geraHash(new File(lista.get(i).toString())));
-//		}
-		List<Arquivo> lista = readFile(caminho + "teste2.txt");
-		List<Arquivo> lista2 = readFile(caminho + "teste.txt");
-
-		List<Arquivo> lista3 = comparaListas(lista, lista2);
-
-		for (int i = 0; i < lista3.size(); i++) {
-			System.out.println(lista3.get(i).getPathFile());
+		List<?> lista = listFileTree(new File(caminho));
+		for (int i = 0; i < lista.size(); i++) {
+			writeFile(caminho, "teste.txt", lista.get(i).toString(), geraHash(new File(lista.get(i).toString())));
 		}
+		
+		
+//		List<Arquivo> lista = readFile(caminho + "teste2.txt");
+//		List<Arquivo> lista2 = readFile(caminho + "teste.txt");
+//
+//		List<Arquivo> lista3 = comparaListas(lista, lista2);
+//
+//		for (int i = 0; i < lista3.size(); i++) {
+//			System.out.println(lista3.get(i).getPathFile());
+//		}
 
 	}
 
