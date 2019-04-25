@@ -43,10 +43,13 @@ public class ArquivoMD5 {
 
 	public void arquivomd5(String caminhoMD5, String nomeMD5)
 			throws NoSuchAlgorithmException, FileNotFoundException, IOException {
-		List<ArquivoTxt> lista = listaCaminhos(new File(pastaAplicação));
-		for (int i = 0; i < lista.size(); i++) {
-			writeFile(caminhoMD5, nomeMD5, lista.get(i).getCaminhoLiteral(), lista.get(i).getCaminhoPasta(),
-					geraHash(new File(lista.get(i).getCaminhoLiteral())));
+		File md5 = new File(caminhoMD5 + nomeMD5);
+		if (!md5.exists()) {
+			List<ArquivoTxt> lista = listaCaminhos(new File(pastaAplicação));
+			for (int i = 0; i < lista.size(); i++) {
+				writeFile(caminhoMD5, nomeMD5, lista.get(i).getCaminhoLiteral(), lista.get(i).getCaminhoPasta(),
+						geraHash(new File(lista.get(i).getCaminhoLiteral())));
+			}
 		}
 	}
 
