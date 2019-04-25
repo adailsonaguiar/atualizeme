@@ -3,6 +3,8 @@ package atualizeme.service;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.math.BigInteger;
@@ -69,23 +71,27 @@ public class Update {
 //
 //		fos.close();
 
+		/*
 		try {
 			DefaultHttpClient httpClient = new DefaultHttpClient();
 			HttpGet getRequest = new HttpGet("http://localhost:8080/atualizeme/api/update/get");
-			//getRequest.addHeader("accept", "application/zip");
+			// getRequest.addHeader("accept", "application/zip");
 			HttpResponse response = httpClient.execute(getRequest);
 			if (response.getStatusLine().getStatusCode() != 200) {
 				throw new RuntimeException("Failed : HTTP error code : " + response.getStatusLine().getStatusCode());
 			}
 
 			/// long l = response.getEntity().getContent()getContentLength();
+			String filePath = response.getLastHeader("filePath").getValue();
+			System.out.println(filePath);
 
 			BufferedReader br = new BufferedReader(new InputStreamReader((response.getEntity().getContent())));
 
 			String output;
 			System.out.println("Output from Server .... \n");
 			while ((output = br.readLine()) != null) {
-				System.out.println(output);
+				//System.out.println(output);
+				
 			}
 
 			httpClient.getConnectionManager().shutdown();
@@ -93,6 +99,26 @@ public class Update {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		*/
+		
+		
+		
+		
+		 Client client = ClientBuilder.newClient();
+	        String url = "http://localhost:8080/atualizeme/api/update/get";
+	        Response response = client.target(url).request().get();
+	        String location = response.getHeaderString("filePath")+" - Novo";
+	        FileOutputStream out = new FileOutputStream(location);
+	        InputStream is = (InputStream)response.getEntity();
+	        int len = 0;
+	        byte[] buffer = new byte[4096];
+	        while((len = is.read(buffer)) != -1) {
+	            out.write(buffer, 0, len);
+	        }
+	        out.flush();
+	        out.close();
+	        is.close();
 
 	}
 
@@ -161,17 +187,15 @@ public class Update {
 
 		for (int i = 0; i < lista3.size(); i++) {
 			System.out.println(lista3.get(i).getPathFile());
-//			System.out.println(lista3.get(i).getPathFile());
 			File file = new File(lista3.get(i).getPathFile());
 			ResponseBuilder response = Response.ok((Object) file);
-//			response.header("Content-Disposition", "attachment; filename=\"file_from_server.txt\"");
 			response.header("Content-Disposition", "attachment; filename=" + lista3.get(i).getPathFile());
 
 //			return response.build();
-			return response.status(Status.OK).entity(lista3.get(i).getPathFile()).build();
+			return response.status(Status.OK).header("filePath", lista3.get(i).getPathFile()).build();
 		}
 		return Response.status(Response.Status.OK).type("application/json")
-				.entity("Seu hash difere do encontrado no servidor!").build();
+				.entity("Nenhum arquivo encontrado!").build();
 	}
 
 	public static String geraHash(File f) throws NoSuchAlgorithmException, FileNotFoundException {
