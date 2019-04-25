@@ -7,40 +7,26 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.math.BigInteger;
-import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 import javax.ws.rs.core.Response.ResponseBuilder;
-import javax.ws.rs.core.Response.Status;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-
-import atualizeme.model.Arquivo;
+import atualizeme.model.ArquivoTxt;
 import atualizeme.test.*;
 
-import java.io.FileOutputStream;
+import javax.ws.rs.core.Response.Status;
 
 @Path("update")
 public class Update {
 
-	private static String caminho = System.getProperty("user.home") + File.separator + "oias" + File.separator;
+	private static String caminhoAplicacao = System.getProperty("user.home") + File.separator + "oias" + File.separator;
 
 	public static void main(String[] args) throws IOException, NoSuchAlgorithmException, URISyntaxException {
 
@@ -72,101 +58,47 @@ public class Update {
 //		fos.close();
 
 		/*
-		try {
-			DefaultHttpClient httpClient = new DefaultHttpClient();
-			HttpGet getRequest = new HttpGet("http://localhost:8080/atualizeme/api/update/get");
-			// getRequest.addHeader("accept", "application/zip");
-			HttpResponse response = httpClient.execute(getRequest);
-			if (response.getStatusLine().getStatusCode() != 200) {
-				throw new RuntimeException("Failed : HTTP error code : " + response.getStatusLine().getStatusCode());
-			}
+		 * try { DefaultHttpClient httpClient = new DefaultHttpClient(); HttpGet
+		 * getRequest = new HttpGet("http://localhost:8080/atualizeme/api/update/get");
+		 * // getRequest.addHeader("accept", "application/zip"); HttpResponse response =
+		 * httpClient.execute(getRequest); if (response.getStatusLine().getStatusCode()
+		 * != 200) { throw new RuntimeException("Failed : HTTP error code : " +
+		 * response.getStatusLine().getStatusCode()); }
+		 * 
+		 * /// long l = response.getEntity().getContent()getContentLength(); String
+		 * filePath = response.getLastHeader("filePath").getValue();
+		 * System.out.println(filePath);
+		 * 
+		 * BufferedReader br = new BufferedReader(new
+		 * InputStreamReader((response.getEntity().getContent())));
+		 * 
+		 * String output; System.out.println("Output from Server .... \n"); while
+		 * ((output = br.readLine()) != null) { //System.out.println(output);
+		 * 
+		 * }
+		 * 
+		 * httpClient.getConnectionManager().shutdown();
+		 * 
+		 * } catch (Exception e) { e.printStackTrace(); }
+		 * 
+		 */
 
-			/// long l = response.getEntity().getContent()getContentLength();
-			String filePath = response.getLastHeader("filePath").getValue();
-			System.out.println(filePath);
-
-			BufferedReader br = new BufferedReader(new InputStreamReader((response.getEntity().getContent())));
-
-			String output;
-			System.out.println("Output from Server .... \n");
-			while ((output = br.readLine()) != null) {
-				//System.out.println(output);
-				
-			}
-
-			httpClient.getConnectionManager().shutdown();
-
-		} catch (Exception e) {
-			e.printStackTrace();
+		Client client = ClientBuilder.newClient();
+		String url = "http://localhost:8080/atualizeme/api/update/get";
+		Response response = client.target(url).request().get();
+		String location = System.getProperty("user.home") + File.separator + "Downloads" + File.separator + "oias"
+				+ File.separator + response.getHeaderString("nomeArquivo");
+		FileOutputStream out = new FileOutputStream(location);
+		InputStream is = (InputStream) response.getEntity();
+		int len = 0;
+		byte[] buffer = new byte[4096];
+		while ((len = is.read(buffer)) != -1) {
+			out.write(buffer, 0, len);
 		}
-		
-		*/
-		
-		
-		
-		
-		 Client client = ClientBuilder.newClient();
-	        String url = "http://localhost:8080/atualizeme/api/update/get";
-	        Response response = client.target(url).request().get();
-	        String location = response.getHeaderString("filePath")+" - Novo";
-	        FileOutputStream out = new FileOutputStream(location);
-	        InputStream is = (InputStream)response.getEntity();
-	        int len = 0;
-	        byte[] buffer = new byte[4096];
-	        while((len = is.read(buffer)) != -1) {
-	            out.write(buffer, 0, len);
-	        }
-	        out.flush();
-	        out.close();
-	        is.close();
+		out.flush();
+		out.close();
+		is.close();
 
-	}
-
-	public static void savefile(URI sourceuri) {
-		String sourceFilename = sourceuri.getPath();
-		String destinationFilename = "C:\\Users\\adailsonacj\\Downloads\\abc.zip";
-
-		BufferedInputStream bis = null;
-		BufferedOutputStream bos = null;
-
-		try {
-			bis = new BufferedInputStream(new FileInputStream(sourceFilename));
-			bos = new BufferedOutputStream(new FileOutputStream(destinationFilename, false));
-			byte[] buf = new byte[1024];
-			bis.read(buf);
-			do {
-				bos.write(buf);
-			} while (bis.read(buf) != -1);
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if (bis != null)
-					bis.close();
-				if (bos != null)
-					bos.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-	}
-
-	private void saveFile(InputStream uploadedInputStream, String uploadedFileLocation) throws Exception {
-		try {
-			OutputStream out = new FileOutputStream(new File(uploadedFileLocation));
-			int read = 0;
-			byte[] bytes = new byte[1];
-
-			out = new FileOutputStream(new File(uploadedFileLocation));
-			while ((read = uploadedInputStream.read(bytes)) != -1) {
-				out.write(bytes, 0, read);
-			}
-			out.flush();
-			out.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-			throw new Exception(e.getMessage());
-		}
 	}
 
 	@GET
@@ -180,47 +112,27 @@ public class Update {
 	@javax.ws.rs.Produces({ "application/json" })
 	public Response getArquivos() throws NoSuchAlgorithmException, FileNotFoundException {
 
-		List<Arquivo> lista = ArquivoTxt.readFile(caminho + "teste2.txt");
-		List<Arquivo> lista2 = ArquivoTxt.readFile(caminho + "teste.txt");
+		ArquivoMD5 md5 = new ArquivoMD5();
+		md5.setNome("MD5.txt");
+		md5.setPastaAplicação(caminhoAplicacao);
 
-		List<Arquivo> lista3 = ArquivoTxt.comparaListas(lista, lista2);
+		List<ArquivoTxt> lista = md5.readFile(md5.getPastaAplicação() + md5.getNome());
+		List<ArquivoTxt> listacliente = md5.readFile(md5.getPastaAplicação() + "2" + md5.getNome());
+
+		List<ArquivoTxt> lista3 = md5.comparaArquivosMD5(lista, listacliente);
 
 		for (int i = 0; i < lista3.size(); i++) {
-			System.out.println(lista3.get(i).getPathFile());
-			File file = new File(lista3.get(i).getPathFile());
+			System.out.println(System.getProperty("user.home") + File.separator + "oias" + File.separator
+					+ lista3.get(i).getCaminhoPasta());
+			File file = new File(System.getProperty("user.home") + File.separator + "oias" + File.separator
+					+ lista3.get(i).getCaminhoPasta());
 			ResponseBuilder response = Response.ok((Object) file);
-			response.header("Content-Disposition", "attachment; filename=" + lista3.get(i).getPathFile());
+			// response.header("Content-Disposition", "attachment; nomeArquivo=" +
+			// lista3.get(i).getCaminhoPasta());
 
-//			return response.build();
-			return response.status(Status.OK).header("filePath", lista3.get(i).getPathFile()).build();
+			return response.status(Status.OK).header("nomeArquivo", lista3.get(i).getCaminhoPasta()).build();
 		}
-		return Response.status(Response.Status.OK).type("application/json")
-				.entity("Nenhum arquivo encontrado!").build();
-	}
-
-	public static String geraHash(File f) throws NoSuchAlgorithmException, FileNotFoundException {
-		MessageDigest digest = MessageDigest.getInstance("MD5");
-		InputStream is = new FileInputStream(f);
-		byte[] buffer = new byte[8192];
-		int read = 0;
-		String output = null;
-		try {
-			while ((read = is.read(buffer)) > 0) {
-				digest.update(buffer, 0, read);
-			}
-			byte[] md5sum = digest.digest();
-			BigInteger bigInt = new BigInteger(1, md5sum);
-			output = bigInt.toString(16);
-			System.out.println("MD5: " + output);
-		} catch (IOException e) {
-			throw new RuntimeException("NÃ£o foi possivel processar o arquivo.", e);
-		} finally {
-			try {
-				is.close();
-			} catch (IOException e) {
-				throw new RuntimeException("NÃ£o foi possivel fechar o arquivo", e);
-			}
-		}
-		return output;
+		return Response.status(Response.Status.OK).type("application/json").entity("Nenhum arquivo encontrado!")
+				.build();
 	}
 }
