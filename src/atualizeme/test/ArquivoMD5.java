@@ -22,7 +22,7 @@ public class ArquivoMD5 {
 	private String pastaAplicação;
 
 	public static void main(String[] args) throws NoSuchAlgorithmException, IOException {
-//		arquivomd5();
+//		arquivomd5(System.getProperty("user.home") + File.separator + "Downloads" + File.separator + "oias" + File.separator, "arq.txt");
 	}
 
 	public String getNome() {

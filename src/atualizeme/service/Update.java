@@ -10,21 +10,24 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
+import javax.ws.rs.core.Response.Status;
+
 import java.net.URISyntaxException;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Type;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
-
-import javax.ws.rs.core.Response.ResponseBuilder;
-
 import atualizeme.model.ArquivoTxt;
 import atualizeme.test.*;
 
-import javax.ws.rs.core.Response.Status;
-
-import org.glassfish.jersey.media.multipart.FormDataParam;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 @Path("update")
 public class Update {
@@ -34,18 +37,24 @@ public class Update {
 	public static void main(String[] args) throws IOException, NoSuchAlgorithmException, URISyntaxException {
 
 		ArquivoMD5 md5 = new ArquivoMD5();
+
 		md5.setNome("MD5.txt");
-		md5.setPastaAplicação(caminhoAplicacao);
+		md5.setPastaAplicação(System.getProperty("user.home") + File.separator + "Downloads" + File.separator + "oias"
+				+ File.separator);
 		md5.arquivomd5(md5.getPastaAplicação(), md5.getNome());
 
-		List<ArquivoTxt> listacliente = md5.readFile(md5.getPastaAplicação() + "2" + md5.getNome());
+		List<ArquivoTxt> listacliente = md5.readFile(md5.getPastaAplicação() + md5.getNome());
+		String json = new Gson().toJson(listacliente);
+		String encodedString = Base64.getEncoder().encodeToString(json.getBytes());
 
 		Client client = ClientBuilder.newClient();
 		String url = "http://localhost:8080/atualizeme/api/update/get";
-		Response response = client.target(url).request().post(Entity.entity(listacliente, MediaType.APPLICATION_JSON));
+		Response response = client.target(url).path(encodedString).request().get();
+
 		String location = System.getProperty("user.home") + File.separator + "Downloads" + File.separator + "oias"
 				+ File.separator + response.getHeaderString("nomeArquivo");
 //		FileOutputStream out = new FileOutputStream(location);
+		System.out.println(location);
 //		InputStream is = (InputStream) response.getEntity();
 //		int len = 0;
 //		byte[] buffer = new byte[4096];
@@ -64,31 +73,34 @@ public class Update {
 		return "teste realizado com sucesso.";
 	}
 
-	@javax.ws.rs.POST
-	@Path("/get/{clienteLista}")
+	@javax.ws.rs.GET
+	@Path("/get/{listaCliente}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@javax.ws.rs.Produces({ "application/json" })
-	public Response getArquivos(@PathParam("clienteLista") String clienteLista)
+	public Response getArquivos(@PathParam("listaCliente") String listaCliente)
 			throws NoSuchAlgorithmException, IOException {
 
-		System.out.println(clienteLista);
-//		ArquivoMD5 md5 = new ArquivoMD5();
-//		md5.setNome("MD5.txt");
-//		md5.setPastaAplicação(caminhoAplicacao);
-//		md5.arquivomd5(md5.getPastaAplicação(), md5.getNome());
-//
-//		List<ArquivoTxt> lista = md5.readFile(md5.getPastaAplicação() + md5.getNome());
-//		
-//
-//		List<ArquivoTxt> lista3 = md5.comparaArquivosMD5(lista, listacliente);
-//
-//		for (int i = 0; i < lista3.size(); i++) {
-//			File file = new File(System.getProperty("user.home") + File.separator + "oias" + File.separator
-//					+ lista3.get(i).getCaminhoPasta());
-//			ResponseBuilder response = Response.ok((Object) file);
-//			return response.status(Status.PARTIAL_CONTENT).header("nomeArquivo", lista3.get(i).getCaminhoPasta())
-//					.build();
-//		}
+		byte[] decodedBytes = Base64.getDecoder().decode(listaCliente);
+		String decodedString = new String(decodedBytes);
+		Type listType = new TypeToken<ArrayList<ArquivoTxt>>() {
+		}.getType();
+		List<ArquivoTxt> lista2 = new Gson().fromJson(decodedString, listType);
+		ArquivoMD5 md5 = new ArquivoMD5();
+		md5.setNome("MD5.txt");
+		md5.setPastaAplicação(caminhoAplicacao);
+		md5.arquivomd5(md5.getPastaAplicação(), md5.getNome());
+
+		List<ArquivoTxt> lista = md5.readFile(md5.getPastaAplicação() + md5.getNome());
+
+		List<ArquivoTxt> lista3 = md5.comparaArquivosMD5(lista, lista2);
+
+		for (int i = 0; i < lista3.size(); i++) {
+			File file = new File(System.getProperty("user.home") + File.separator + "oias" + File.separator
+					+ lista3.get(i).getCaminhoPasta());
+			ResponseBuilder response = Response.ok((Object) file);
+			return response.status(Status.PARTIAL_CONTENT).header("nomeArquivo", lista3.get(i).getCaminhoPasta())
+					.build();
+		}
 		return Response.status(Response.Status.OK).type("application/json").entity("Nada para Atualizar!").build();
 	}
 }
