@@ -19,7 +19,7 @@ import atualizeme.model.ArquivoTxt;
 public class ArquivoMD5 {
 
 	private static String nome;
-	private String pastaAplicação;
+	private String pastaAplicacao;
 
 	public static void main(String[] args) throws NoSuchAlgorithmException, IOException {
 //		arquivomd5(System.getProperty("user.home") + File.separator + "Downloads" + File.separator + "oias" + File.separator, "arq.txt");
@@ -33,19 +33,19 @@ public class ArquivoMD5 {
 		ArquivoMD5.nome = nome;
 	}
 
-	public String getPastaAplicação() {
-		return pastaAplicação;
+	public String getPastaAplicacao() {
+		return pastaAplicacao;
 	}
 
-	public void setPastaAplicação(String pastaAplicação) {
-		this.pastaAplicação = pastaAplicação;
+	public void setPastaAplicacao(String pastaAplicacao) {
+		this.pastaAplicacao = pastaAplicacao;
 	}
 
 	public void arquivomd5(String caminhoMD5, String nomeMD5)
 			throws NoSuchAlgorithmException, FileNotFoundException, IOException {
 		File md5 = new File(caminhoMD5 + nomeMD5);
 		if (!md5.exists()) {
-			List<ArquivoTxt> lista = listaCaminhos(new File(pastaAplicação));
+			List<ArquivoTxt> lista = listaCaminhos(new File(pastaAplicacao));
 			for (int i = 0; i < lista.size(); i++) {
 				writeFile(caminhoMD5, nomeMD5, lista.get(i).getCaminhoLiteral(), lista.get(i).getCaminhoPasta(),
 						geraHash(new File(lista.get(i).getCaminhoLiteral())));
@@ -97,7 +97,7 @@ public class ArquivoMD5 {
 		for (File entry : dir.listFiles()) {
 			if (entry.isFile()) {
 //				fileTree.add(entry);
-				String[] dados = entry.getAbsolutePath().split("oias\\\\");
+				String[] dados = entry.getAbsolutePath().split("oias" + File.separator);
 				fileTree.add(new ArquivoTxt(dados[1], entry.getAbsolutePath(), "", entry));
 			} else
 				fileTree.addAll(listaCaminhos(entry));

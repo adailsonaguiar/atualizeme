@@ -35,35 +35,40 @@ public class Update {
 	private static String caminhoAplicacao = System.getProperty("user.home") + File.separator + "oias" + File.separator;
 
 	public static void main(String[] args) throws IOException, NoSuchAlgorithmException, URISyntaxException {
+		boolean end = false;
+		while (!end) {
+			ArquivoMD5 md5 = new ArquivoMD5();
 
-		ArquivoMD5 md5 = new ArquivoMD5();
+			md5.setNome("MD5.txt");
+			md5.setPastaAplicacao(System.getProperty("user.home") + File.separator + "Downloads" + File.separator
+					+ "oias" + File.separator);
+			md5.arquivomd5(md5.getPastaAplicacao(), md5.getNome());
+			List<ArquivoTxt> listacliente = md5.readFile(md5.getPastaAplicacao() + md5.getNome());
+			String json = new Gson().toJson(listacliente);
+			String encodedString = Base64.getEncoder().encodeToString(json.getBytes());
 
-		md5.setNome("MD5.txt");
-		md5.setPastaAplicação(System.getProperty("user.home") + File.separator + "Downloads" + File.separator + "oias"
-				+ File.separator);
-		md5.arquivomd5(md5.getPastaAplicação(), md5.getNome());
+			Client client = ClientBuilder.newClient();
+			String url = "http://localhost:8080/atualizeme/api/update/get";
+			Response response = client.target(url).path(encodedString).request().get();
 
-		List<ArquivoTxt> listacliente = md5.readFile(md5.getPastaAplicação() + md5.getNome());
-		String json = new Gson().toJson(listacliente);
-		String encodedString = Base64.getEncoder().encodeToString(json.getBytes());
-
-		Client client = ClientBuilder.newClient();
-		String url = "http://localhost:8080/atualizeme/api/update/get";
-		Response response = client.target(url).path(encodedString).request().get();
-
-		String location = System.getProperty("user.home") + File.separator + "Downloads" + File.separator + "oias"
-				+ File.separator + response.getHeaderString("nomeArquivo");
-//		FileOutputStream out = new FileOutputStream(location);
-		System.out.println(location);
-//		InputStream is = (InputStream) response.getEntity();
-//		int len = 0;
-//		byte[] buffer = new byte[4096];
-//		while ((len = is.read(buffer)) != -1) {
-//			out.write(buffer, 0, len);
-//		}
-//		out.flush();
-//		out.close();
-//		is.close();
+			String location = System.getProperty("user.home") + File.separator + "Downloads" + File.separator + "oias"
+					+ File.separator + response.getHeaderString("nomeArquivo") + "novo.png";
+			FileOutputStream out = new FileOutputStream(location);
+			System.out.println(location);
+			InputStream is = (InputStream) response.getEntity();
+			int len = 0;
+			byte[] buffer = new byte[4096];
+			while ((len = is.read(buffer)) != -1) {
+				out.write(buffer, 0, len);
+			}
+			if (response.getStatus() == 200) {
+				end = true;
+				System.out.println("Tudo atualizado!");
+			}
+			out.flush();
+			out.close();
+			is.close();
+		}
 
 	}
 
@@ -87,10 +92,10 @@ public class Update {
 		List<ArquivoTxt> lista2 = new Gson().fromJson(decodedString, listType);
 		ArquivoMD5 md5 = new ArquivoMD5();
 		md5.setNome("MD5.txt");
-		md5.setPastaAplicação(caminhoAplicacao);
-		md5.arquivomd5(md5.getPastaAplicação(), md5.getNome());
+		md5.setPastaAplicacao(caminhoAplicacao);
+		md5.arquivomd5(md5.getPastaAplicacao(), md5.getNome());
 
-		List<ArquivoTxt> lista = md5.readFile(md5.getPastaAplicação() + md5.getNome());
+		List<ArquivoTxt> lista = md5.readFile(md5.getPastaAplicacao() + md5.getNome());
 
 		List<ArquivoTxt> lista3 = md5.comparaArquivosMD5(lista, lista2);
 
@@ -100,6 +105,7 @@ public class Update {
 			ResponseBuilder response = Response.ok((Object) file);
 			return response.status(Status.PARTIAL_CONTENT).header("nomeArquivo", lista3.get(i).getCaminhoPasta())
 					.build();
+//			System.out.println(lista3.get(i).getCaminhoPasta());
 		}
 		return Response.status(Response.Status.OK).type("application/json").entity("Nada para Atualizar!").build();
 	}
