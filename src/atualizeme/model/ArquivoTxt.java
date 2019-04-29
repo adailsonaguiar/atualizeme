@@ -1,7 +1,6 @@
 package atualizeme.model;
 
 import java.io.File;
-import java.io.IOException;
 
 public class ArquivoTxt {
 
@@ -48,13 +47,12 @@ public class ArquivoTxt {
 	public void setFile(File file) {
 		this.file = file;
 	}
-	
-	public static void main(String...args) throws IOException {
-		File f = new File("C:\\Users\\adailsonacj\\oias\\Nova pasta\\Nova pasta (2)\\sicap.rar");
-		System.out.println(f.getCanonicalPath());
-		System.out.println(f.getAbsolutePath());
-		System.out.println(f.getPath());
-		String[] dados = f.getPath().split("oias\\\\");
-		System.out.println(dados[1]);
+
+	@Override
+	public boolean equals(Object arquivo) {
+		if (this.caminhoPasta == ((ArquivoTxt) arquivo).getCaminhoPasta()) {
+			return true;
+		}
+		return false;
 	}
 }

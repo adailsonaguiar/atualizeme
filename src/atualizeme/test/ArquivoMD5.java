@@ -22,7 +22,34 @@ public class ArquivoMD5 {
 	private String pastaAplicacao;
 
 	public static void main(String[] args) throws NoSuchAlgorithmException, IOException {
-//		arquivomd5(System.getProperty("user.home") + File.separator + "Downloads" + File.separator + "oias" + File.separator, "arq.txt");
+//		ArquivoTxt no = new ArquivoTxt("Nova pasta\\Nova pasta (2)\\3a2we1fa3efdad.txt",
+//				"C:\\Users\\adailsonacj\\oias\\Nova pasta\\Nova pasta (2)\\3a2we1fa3efdad.txt",
+//				"babe6d557f9ed15b23db20a025fa148", null);
+//		
+
+		List<ArquivoTxt> lista = new ArrayList<ArquivoTxt>();
+		lista.add(new ArquivoTxt("Nova pasta\\Nova pasta (2)\\3a2we1fa3efdad.txt",
+				"C:\\Users\\adailsonacj\\oias\\Nova pasta\\Nova pasta (2)\\3a2we1fa3efdad.txt",
+				"babe6d557f9ed15b23db20a025fa148", null));
+
+		List<ArquivoTxt> lista2 = new ArrayList<ArquivoTxt>();
+		lista2.add(new ArquivoTxt("Nova psasta\\Nova pasta (2)\\3a2we1fa3efdad.txt",
+				"C:\\Users\\adailsonacj\\oias\\Nova pasta\\Nova pasta (2)\\3a2we1fa3efdad.txt",
+				"babe6d557f9ed15b23db20a025fa148", null));
+
+		if (lista.contains(lista2.get(0))) {
+			System.out.println(true);
+		}
+		System.out.println(false);
+
+//		List<ArquivoTxt> lista = readFile(
+//				System.getProperty("user.home") + File.separator + "aaa" + File.separator + "MD5.txt");
+//		List<ArquivoTxt> lista2 = readFile(
+//				System.getProperty("user.home") + File.separator + "aaa" + File.separator + "2MD5.txt");
+//		arquivosExcluir(lista, lista2);
+		// C:\\Users\\adailsonacj\\oias\\Nova pasta\\Nova pasta (2)\\3a2we1fa3efdad.txt
+		// C:\\Users\\adailsonacj\\oias\\Nova pasta\\Nova pasta (2)\\3a2we1fa3efdad.txt
+
 	}
 
 	public String getNome() {
@@ -73,7 +100,7 @@ public class ArquivoMD5 {
 		write.close();
 	}
 
-	public List<ArquivoTxt> readFile(String pathFile) {
+	public static List<ArquivoTxt> readFile(String pathFile) {
 
 		List<ArquivoTxt> content = new ArrayList<>();
 		try {
@@ -137,18 +164,32 @@ public class ArquivoMD5 {
 		return output;
 	}
 
-	public List<ArquivoTxt> comparaArquivosMD5(List<ArquivoTxt> lista, List<ArquivoTxt> lista2) {
+	public List<ArquivoTxt> comparaArquivosMD5(List<ArquivoTxt> listaServidor, List<ArquivoTxt> listacliente) {
 		List<ArquivoTxt> arqEnvio = new ArrayList<>();
-		for (int i = 0; i < lista.size(); i++) {
-			for (int j = 0; j < lista2.size(); j++) {
-				if (lista.get(i).getCaminhoPasta().equals(lista2.get(j).getCaminhoPasta())) {
-					if (!lista.get(i).getHashFile().equals(lista2.get(j).getHashFile())) {
-						arqEnvio.add(new ArquivoTxt(lista.get(i).getCaminhoPasta(), lista.get(i).getCaminhoLiteral(),
-								lista.get(i).getHashFile(), null));
+		for (int i = 0; i < listaServidor.size(); i++) {
+			for (int j = 0; j < listacliente.size(); j++) {
+				if (listaServidor.get(i).getCaminhoPasta().equals(listacliente.get(j).getCaminhoPasta())) {
+					if (!listaServidor.get(i).getHashFile().equals(listacliente.get(j).getHashFile())) {
+						arqEnvio.add(new ArquivoTxt(listaServidor.get(i).getCaminhoPasta(),
+								listaServidor.get(i).getCaminhoLiteral(), listaServidor.get(i).getHashFile(), null));
 					}
 				}
 			}
 		}
 		return arqEnvio;
+	}
+
+	public static List<ArquivoTxt> arquivosExcluir(List<ArquivoTxt> listaServidor, List<ArquivoTxt> listacliente) {
+		List<ArquivoTxt> arqExlusao = new ArrayList<>();
+		for (int i = 0; i < listacliente.size(); i++) {
+//		for (int j = 0; j < listaServidor.size(); j++) {
+//			if (listacliente.get(i).equals(listaServidor.get(j).getCaminhoPasta())) {
+//				arqExlusao.add(new ArquivoTxt(listaServidor.get(i).getCaminhoPasta(),
+//						listaServidor.get(i).getCaminhoLiteral(), listaServidor.get(i).getHashFile(), null));
+//				System.out.println(listaServidor.get(i).getCaminhoLiteral());
+//			}
+//		}
+		}
+		return arqExlusao;
 	}
 }
