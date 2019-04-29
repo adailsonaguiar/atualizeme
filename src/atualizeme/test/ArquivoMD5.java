@@ -50,6 +50,13 @@ public class ArquivoMD5 {
 				writeFile(caminhoMD5, nomeMD5, lista.get(i).getCaminhoLiteral(), lista.get(i).getCaminhoPasta(),
 						geraHash(new File(lista.get(i).getCaminhoLiteral())));
 			}
+		} else if (md5.delete()) {
+			List<ArquivoTxt> lista = listaCaminhos(new File(pastaAplicacao));
+			for (int i = 0; i < lista.size(); i++) {
+				writeFile(caminhoMD5, nomeMD5, lista.get(i).getCaminhoLiteral(), lista.get(i).getCaminhoPasta(),
+						geraHash(new File(lista.get(i).getCaminhoLiteral())));
+			}
+
 		}
 	}
 
@@ -97,7 +104,7 @@ public class ArquivoMD5 {
 		for (File entry : dir.listFiles()) {
 			if (entry.isFile()) {
 //				fileTree.add(entry);
-				String[] dados = entry.getAbsolutePath().split("oias" + File.separator);
+				String[] dados = entry.getAbsolutePath().split("oias" + File.separator + File.separator);
 				fileTree.add(new ArquivoTxt(dados[1], entry.getAbsolutePath(), "", entry));
 			} else
 				fileTree.addAll(listaCaminhos(entry));
