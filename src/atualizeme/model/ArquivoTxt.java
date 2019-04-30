@@ -50,7 +50,7 @@ public class ArquivoTxt {
 
 	@Override
 	public boolean equals(Object arquivo) {
-		if (this.caminhoPasta == ((ArquivoTxt) arquivo).getCaminhoPasta()) {
+		if (this.getCaminhoPasta().equals(((ArquivoTxt) arquivo).getCaminhoPasta())) {
 			return true;
 		}
 		return false;

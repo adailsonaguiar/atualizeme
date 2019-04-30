@@ -22,33 +22,17 @@ public class ArquivoMD5 {
 	private String pastaAplicacao;
 
 	public static void main(String[] args) throws NoSuchAlgorithmException, IOException {
-//		ArquivoTxt no = new ArquivoTxt("Nova pasta\\Nova pasta (2)\\3a2we1fa3efdad.txt",
-//				"C:\\Users\\adailsonacj\\oias\\Nova pasta\\Nova pasta (2)\\3a2we1fa3efdad.txt",
-//				"babe6d557f9ed15b23db20a025fa148", null);
-//		
 
-		List<ArquivoTxt> lista = new ArrayList<ArquivoTxt>();
-		lista.add(new ArquivoTxt("Nova pasta\\Nova pasta (2)\\3a2we1fa3efdad.txt",
-				"C:\\Users\\adailsonacj\\oias\\Nova pasta\\Nova pasta (2)\\3a2we1fa3efdad.txt",
-				"babe6d557f9ed15b23db20a025fa148", null));
+		List<ArquivoTxt> lista = readFile(
+				System.getProperty("user.home") + File.separator + "aaa" + File.separator + "MD5.txt");
+		List<ArquivoTxt> lista2 = readFile(
+				System.getProperty("user.home") + File.separator + "aaa" + File.separator + "2MD5.txt");
 
-		List<ArquivoTxt> lista2 = new ArrayList<ArquivoTxt>();
-		lista2.add(new ArquivoTxt("Nova psasta\\Nova pasta (2)\\3a2we1fa3efdad.txt",
-				"C:\\Users\\adailsonacj\\oias\\Nova pasta\\Nova pasta (2)\\3a2we1fa3efdad.txt",
-				"babe6d557f9ed15b23db20a025fa148", null));
+		// arquivosExcluir(lista,lista2);
 
 		if (lista.contains(lista2.get(0))) {
-			System.out.println(true);
+			System.out.println("Contém");
 		}
-		System.out.println(false);
-
-//		List<ArquivoTxt> lista = readFile(
-//				System.getProperty("user.home") + File.separator + "aaa" + File.separator + "MD5.txt");
-//		List<ArquivoTxt> lista2 = readFile(
-//				System.getProperty("user.home") + File.separator + "aaa" + File.separator + "2MD5.txt");
-//		arquivosExcluir(lista, lista2);
-		// C:\\Users\\adailsonacj\\oias\\Nova pasta\\Nova pasta (2)\\3a2we1fa3efdad.txt
-		// C:\\Users\\adailsonacj\\oias\\Nova pasta\\Nova pasta (2)\\3a2we1fa3efdad.txt
 
 	}
 
@@ -182,6 +166,9 @@ public class ArquivoMD5 {
 	public static List<ArquivoTxt> arquivosExcluir(List<ArquivoTxt> listaServidor, List<ArquivoTxt> listacliente) {
 		List<ArquivoTxt> arqExlusao = new ArrayList<>();
 		for (int i = 0; i < listacliente.size(); i++) {
+			if (listaServidor.contains(listacliente.get(i))) {
+				System.out.println("Arquivo não encontrado no servidor!");
+			}
 //		for (int j = 0; j < listaServidor.size(); j++) {
 //			if (listacliente.get(i).equals(listaServidor.get(j).getCaminhoPasta())) {
 //				arqExlusao.add(new ArquivoTxt(listaServidor.get(i).getCaminhoPasta(),
@@ -192,4 +179,5 @@ public class ArquivoMD5 {
 		}
 		return arqExlusao;
 	}
+
 }
