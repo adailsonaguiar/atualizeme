@@ -23,16 +23,12 @@ public class ArquivoMD5 {
 
 	public static void main(String[] args) throws NoSuchAlgorithmException, IOException {
 
-		List<ArquivoTxt> lista = readFile(
+		List<ArquivoTxt> listaServidor = readFile(
 				System.getProperty("user.home") + File.separator + "aaa" + File.separator + "MD5.txt");
-		List<ArquivoTxt> lista2 = readFile(
+		List<ArquivoTxt> listacliente = readFile(
 				System.getProperty("user.home") + File.separator + "aaa" + File.separator + "2MD5.txt");
 
-		// arquivosExcluir(lista,lista2);
-
-		if (lista.contains(lista2.get(0))) {
-			System.out.println("Contém");
-		}
+		arquivosExcluir(listaServidor, listacliente);
 
 	}
 
@@ -166,16 +162,10 @@ public class ArquivoMD5 {
 	public static List<ArquivoTxt> arquivosExcluir(List<ArquivoTxt> listaServidor, List<ArquivoTxt> listacliente) {
 		List<ArquivoTxt> arqExlusao = new ArrayList<>();
 		for (int i = 0; i < listacliente.size(); i++) {
-			if (listaServidor.contains(listacliente.get(i))) {
-				System.out.println("Arquivo não encontrado no servidor!");
+			if (!listaServidor.contains(listacliente.get(i))) {
+				arqExlusao.add(new ArquivoTxt(listacliente.get(i).getCaminhoPasta(), "", "", null));
+				System.out.println("Excluir arquivo " + listacliente.get(i).getCaminhoPasta());
 			}
-//		for (int j = 0; j < listaServidor.size(); j++) {
-//			if (listacliente.get(i).equals(listaServidor.get(j).getCaminhoPasta())) {
-//				arqExlusao.add(new ArquivoTxt(listaServidor.get(i).getCaminhoPasta(),
-//						listaServidor.get(i).getCaminhoLiteral(), listaServidor.get(i).getHashFile(), null));
-//				System.out.println(listaServidor.get(i).getCaminhoLiteral());
-//			}
-//		}
 		}
 		return arqExlusao;
 	}
