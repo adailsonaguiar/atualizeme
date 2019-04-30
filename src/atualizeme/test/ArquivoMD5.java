@@ -23,12 +23,12 @@ public class ArquivoMD5 {
 
 	public static void main(String[] args) throws NoSuchAlgorithmException, IOException {
 
-		List<ArquivoTxt> listaServidor = readFile(
-				System.getProperty("user.home") + File.separator + "oias" + File.separator + "MD5.txt");
-		List<ArquivoTxt> listacliente = readFile(
-				System.getProperty("user.home") + File.separator + "Downloads" + File.separator + "oias" + File.separator + "MD5.txt");
-
-		System.out.println(comparaListas(listaServidor, listacliente));
+//		List<ArquivoTxt> listaServidor = readFile(
+//				System.getProperty("user.home") + File.separator + "oias" + File.separator + "MD5.txt");
+//		List<ArquivoTxt> listacliente = readFile(
+//				System.getProperty("user.home") + File.separator + "Downloads" + File.separator + "oias" + File.separator + "MD5.txt");
+//
+//		System.out.println(comparaListas(listaServidor, listacliente));
 
 	}
 
@@ -80,7 +80,7 @@ public class ArquivoMD5 {
 		write.close();
 	}
 
-	public static List<ArquivoTxt> readFile(String pathFile) {
+	public List<ArquivoTxt> readFile(String pathFile) {
 
 		List<ArquivoTxt> content = new ArrayList<>();
 		try {
@@ -111,7 +111,8 @@ public class ArquivoMD5 {
 		for (File entry : dir.listFiles()) {
 			if (entry.isFile()) {
 //				fileTree.add(entry);
-				String[] dados = entry.getAbsolutePath().split("oias" + File.separator);
+//				String[] dados = entry.getAbsolutePath().split("oias" + File.separator);
+				String[] dados = entry.getAbsolutePath().split("oias" + File.separator + File.separator);
 				fileTree.add(new ArquivoTxt(dados[1], entry.getAbsolutePath(), "", entry));
 			} else
 				fileTree.addAll(listaCaminhos(entry));
