@@ -24,11 +24,11 @@ public class ArquivoMD5 {
 	public static void main(String[] args) throws NoSuchAlgorithmException, IOException {
 
 		List<ArquivoTxt> listaServidor = readFile(
-				System.getProperty("user.home") + File.separator + "aaa" + File.separator + "MD5.txt");
+				System.getProperty("user.home") + File.separator + "oias" + File.separator + "MD5.txt");
 		List<ArquivoTxt> listacliente = readFile(
-				System.getProperty("user.home") + File.separator + "aaa" + File.separator + "2MD5.txt");
+				System.getProperty("user.home") + File.separator + "Downloads" + File.separator + "oias" + File.separator + "MD5.txt");
 
-		arquivosExcluir(listaServidor, listacliente);
+		System.out.println(comparaListas(listaServidor, listacliente));
 
 	}
 
@@ -111,7 +111,7 @@ public class ArquivoMD5 {
 		for (File entry : dir.listFiles()) {
 			if (entry.isFile()) {
 //				fileTree.add(entry);
-				String[] dados = entry.getAbsolutePath().split("oias" + File.separator + File.separator);
+				String[] dados = entry.getAbsolutePath().split("oias" + File.separator);
 				fileTree.add(new ArquivoTxt(dados[1], entry.getAbsolutePath(), "", entry));
 			} else
 				fileTree.addAll(listaCaminhos(entry));
@@ -144,22 +144,7 @@ public class ArquivoMD5 {
 		return output;
 	}
 
-	public List<ArquivoTxt> comparaArquivosMD5(List<ArquivoTxt> listaServidor, List<ArquivoTxt> listacliente) {
-		List<ArquivoTxt> arqEnvio = new ArrayList<>();
-		for (int i = 0; i < listaServidor.size(); i++) {
-			for (int j = 0; j < listacliente.size(); j++) {
-				if (listaServidor.get(i).getCaminhoPasta().equals(listacliente.get(j).getCaminhoPasta())) {
-					if (!listaServidor.get(i).getHashFile().equals(listacliente.get(j).getHashFile())) {
-						arqEnvio.add(new ArquivoTxt(listaServidor.get(i).getCaminhoPasta(),
-								listaServidor.get(i).getCaminhoLiteral(), listaServidor.get(i).getHashFile(), null));
-					}
-				}
-			}
-		}
-		return arqEnvio;
-	}
-
-	public static List<ArquivoTxt> arquivosExcluir(List<ArquivoTxt> listaServidor, List<ArquivoTxt> listacliente) {
+	public List<ArquivoTxt> arquivosExcluir(List<ArquivoTxt> listaServidor, List<ArquivoTxt> listacliente) {
 		List<ArquivoTxt> arqExlusao = new ArrayList<>();
 		for (int i = 0; i < listacliente.size(); i++) {
 			if (!listaServidor.contains(listacliente.get(i))) {
@@ -168,6 +153,22 @@ public class ArquivoMD5 {
 			}
 		}
 		return arqExlusao;
+	}
+
+	public static List<ArquivoTxt> comparaListas(List<ArquivoTxt> listaServidor, List<ArquivoTxt> listacliente) {
+		List<ArquivoTxt> arqEnvio = new ArrayList<>();
+		for (int i = 0; i < listacliente.size(); i++) {
+			if (listaServidor.contains(listacliente.get(i))) {
+				for (int j = 0; j < listaServidor.size(); j++) {
+					if (listaServidor.get(j).getCaminhoPasta().equals(listacliente.get(i).getCaminhoPasta())) {
+						if (!listaServidor.get(j).getHashFile().equals(listacliente.get(i).getHashFile())) {
+							arqEnvio.add(listaServidor.get(j));
+						}
+					}
+				}
+			}
+		}
+		return arqEnvio;
 	}
 
 }

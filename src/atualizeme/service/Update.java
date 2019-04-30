@@ -61,6 +61,14 @@ public class Update {
 						+ "oias" + File.separator + response.getHeaderString("nomeArquivo");
 				System.out.println(location);
 
+				byte[] decodedBytes = Base64.getDecoder().decode(response.getHeaderString("listaExclusao"));
+				String decodedString = new String(decodedBytes);
+				Type listType = new TypeToken<ArrayList<ArquivoTxt>>() {
+				}.getType();
+				List<ArquivoTxt> listaExclusao = new Gson().fromJson(decodedString, listType);
+
+				System.out.println(listaExclusao);
+
 				FileOutputStream out = new FileOutputStream(location);
 				InputStream is = (InputStream) response.getEntity();
 
@@ -103,15 +111,27 @@ public class Update {
 
 		List<ArquivoTxt> lista = md5.readFile(md5.getPastaAplicacao() + md5.getNome());
 
-		List<ArquivoTxt> lista3 = md5.comparaArquivosMD5(lista, lista2);
+		List<ArquivoTxt> lista3 = md5.comparaListas(lista, lista2);
 
+		List<ArquivoTxt> listaExcluir = md5.arquivosExcluir(lista, lista2);
+		String strListaExclusao = null;
+		System.out.println("lista exclusão " + listaExcluir);
+		System.out.println("lista comparada " + lista3);
 		for (int i = 0; i < lista3.size(); i++) {
 			File file = new File(System.getProperty("user.home") + File.separator + "oias" + File.separator
 					+ lista3.get(i).getCaminhoPasta());
 			ResponseBuilder response = Response.ok((Object) file);
 			System.out.println(lista3.get(i).getCaminhoPasta());
 			return response.status(Status.PARTIAL_CONTENT).header("nomeArquivo", lista3.get(i).getCaminhoPasta())
-					.build();
+					.header("listaExclusao", strListaExclusao).build();
+		}
+		if (listaExcluir.size() > 0) {
+			System.out.println(listaExcluir);
+			String json = new Gson().toJson(listaExcluir);
+			strListaExclusao = Base64.getEncoder().encodeToString(json.getBytes());
+
+			ResponseBuilder response = Response.ok();
+			return response.status(Status.PARTIAL_CONTENT).header("listaExclusao", strListaExclusao).build();
 		}
 		return Response.status(Response.Status.OK).type("application/json").entity("Nada para Atualizar!").build();
 	}
