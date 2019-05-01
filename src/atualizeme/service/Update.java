@@ -32,10 +32,24 @@ public class Update {
 	}
 
 	@javax.ws.rs.GET
-	@Path("/verificar/")
+	@Path("/arquivoverificacao/")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@javax.ws.rs.Produces({ "application/json" })
-	public Response verificaAtualizacao() throws NoSuchAlgorithmException, IOException {
+	public Response baixarArquivoVerificacao() throws NoSuchAlgorithmException, IOException {
+		ArquivoMD5 md5 = new ArquivoMD5();
+		md5.setNome("MD5.txt");
+		md5.setPastaAplicacao(caminhoAplicacao);
+		md5.arquivomd5(md5.getPastaAplicacao(), md5.getNome());
+		File file = new File(caminhoAplicacao + md5.getNome());
+		ResponseBuilder response = Response.ok((Object) file);
+		return response.status(Status.OK).build();
+	}
+
+	@javax.ws.rs.GET
+	@Path("/verificaratualizacao/")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@javax.ws.rs.Produces({ "application/json" })
+	public Response verificarAtualizacao() throws NoSuchAlgorithmException, IOException {
 		ArquivoMD5 md5 = new ArquivoMD5();
 		md5.setNome("MD5.txt");
 		md5.setPastaAplicacao(caminhoAplicacao);
@@ -51,10 +65,10 @@ public class Update {
 	}
 
 	@javax.ws.rs.GET
-	@Path("/getArquivo/{caminhoPasta}")
+	@Path("/getarquivo/{caminhoPasta}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@javax.ws.rs.Produces({ "application/json" })
-	public Response enviaArquivo(@PathParam("caminhoPasta") String caminhoPasta)
+	public Response enviarArquivo(@PathParam("caminhoPasta") String caminhoPasta)
 			throws NoSuchAlgorithmException, IOException {
 		byte[] decodedBytes = Base64.getDecoder().decode(caminhoPasta);
 		String decodedString = new String(decodedBytes);
