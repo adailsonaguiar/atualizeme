@@ -20,19 +20,6 @@ public class ArquivoMD5 {
 
 	public static void main(String[] args) throws NoSuchAlgorithmException, IOException {
 
-//		List<ArquivoTxt> listaServidor = readFile(
-//				System.getProperty("user.home") + File.separator + "oias" + File.separator + "MD5.txt");
-//		List<ArquivoTxt> listacliente = readFile(
-//				System.getProperty("user.home") + File.separator + "Downloads" + File.separator + "oias" + File.separator + "MD5.txt");
-//
-//		System.out.println(comparaListas(listaServidor, listacliente));
-
-		String location = "/home/adailson/Downloads/oias/drawable-xxhdpi/icon.png";
-
-		File f = new File(location);
-		System.out.println(f.getParentFile());
-// FileOutputStream out = new FileOutputStream(location);
-
 	}
 
 	public String getNome() {
@@ -112,9 +99,13 @@ public class ArquivoMD5 {
 		}
 		for (File entry : dir.listFiles()) {
 			if (entry.isFile()) {
-//				fileTree.add(entry);
-				String[] dados = entry.getAbsolutePath().split(NOME_PASTA_APLICACAO + File.separator);
-//				String[] dados = entry.getAbsolutePath().split(NOME_PASTA_APLICACAO + File.separator + File.separator);
+				String[] dados = null;
+				String os = System.getProperty("os.name");
+				if (os.contains("Windows")) {
+					dados = entry.getAbsolutePath().split(NOME_PASTA_APLICACAO + File.separator + File.separator);
+				} else {
+					dados = entry.getAbsolutePath().split(File.separator + NOME_PASTA_APLICACAO);
+				}
 				fileTree.add(new ArquivoTxt(dados[1], entry.getAbsolutePath(), "", entry, entry.getName()));
 			} else
 				fileTree.addAll(listaCaminhos(entry));
