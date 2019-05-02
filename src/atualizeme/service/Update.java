@@ -15,8 +15,9 @@ import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 import java.util.List;
-import atualizeme.model.ArquivoTxt;
-import atualizeme.test.*;
+
+import atualizeme.atualizacao.*;
+import atualizeme.model.Arquivo;
 
 import com.google.gson.Gson;
 
@@ -36,7 +37,7 @@ public class Update {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@javax.ws.rs.Produces({ "application/json" })
 	public Response baixarArquivoVerificacao() throws NoSuchAlgorithmException, IOException {
-		ArquivoMD5 md5 = new ArquivoMD5();
+		ArquivosAtualizacao md5 = new ArquivosAtualizacao();
 		md5.setNome("MD5.txt");
 		md5.setPastaAplicacao(caminhoAplicacao);
 		md5.arquivomd5(md5.getPastaAplicacao(), md5.getNome());
@@ -50,12 +51,12 @@ public class Update {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@javax.ws.rs.Produces({ "application/json" })
 	public Response verificarAtualizacao() throws NoSuchAlgorithmException, IOException {
-		ArquivoMD5 md5 = new ArquivoMD5();
+		ArquivosAtualizacao md5 = new ArquivosAtualizacao();
 		md5.setNome("MD5.txt");
 		md5.setPastaAplicacao(caminhoAplicacao);
 		md5.arquivomd5(md5.getPastaAplicacao(), md5.getNome());
 
-		List<ArquivoTxt> listaServidor = md5.readFile(md5.getPastaAplicacao() + md5.getNome());
+		List<Arquivo> listaServidor = md5.readFile(md5.getPastaAplicacao() + md5.getNome());
 		String json = new Gson().toJson(listaServidor);
 		String strListaServidor = Base64.getEncoder().encodeToString(json.getBytes());
 

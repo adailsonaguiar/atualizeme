@@ -1,4 +1,4 @@
-package atualizeme.test;
+package atualizeme.atualizacao;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -10,9 +10,9 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
-import atualizeme.model.ArquivoTxt;
+import atualizeme.model.Arquivo;
 
-public class ArquivoMD5 {
+public class ArquivosAtualizacao {
 
 	private static String NOME_PASTA_APLICACAO = "oias";
 	private static String nome;
@@ -27,7 +27,7 @@ public class ArquivoMD5 {
 	}
 
 	public void setNome(String nome) {
-		ArquivoMD5.nome = nome;
+		ArquivosAtualizacao.nome = nome;
 	}
 
 	public String getPastaAplicacao() {
@@ -42,13 +42,13 @@ public class ArquivoMD5 {
 			throws NoSuchAlgorithmException, FileNotFoundException, IOException {
 		File md5 = new File(caminhoMD5 + nomeMD5);
 		if (!md5.exists()) {
-			List<ArquivoTxt> lista = listaCaminhos(new File(caminhoAplicacao));
+			List<Arquivo> lista = listaCaminhos(new File(caminhoAplicacao));
 			for (int i = 0; i < lista.size(); i++) {
 				writeFile(caminhoMD5, nomeMD5, lista.get(i).getCaminhoLiteral(), lista.get(i).getCaminhoPasta(),
 						geraHash(new File(lista.get(i).getCaminhoLiteral())), lista.get(i).getNome());
 			}
 		} else if (md5.delete()) {
-			List<ArquivoTxt> lista = listaCaminhos(new File(caminhoAplicacao));
+			List<Arquivo> lista = listaCaminhos(new File(caminhoAplicacao));
 			for (int i = 0; i < lista.size(); i++) {
 				writeFile(caminhoMD5, nomeMD5, lista.get(i).getCaminhoLiteral(), lista.get(i).getCaminhoPasta(),
 						geraHash(new File(lista.get(i).getCaminhoLiteral())), lista.get(i).getNome());
@@ -72,9 +72,9 @@ public class ArquivoMD5 {
 		write.close();
 	}
 
-	public List<ArquivoTxt> readFile(String pathFile) throws IOException {
+	public List<Arquivo> readFile(String pathFile) throws IOException {
 
-		List<ArquivoTxt> content = new ArrayList<ArquivoTxt>();
+		List<Arquivo> content = new ArrayList<Arquivo>();
 		FileReader arq = new FileReader(pathFile);
 		BufferedReader buffer = new BufferedReader(arq);
 		String linha = null;
@@ -83,18 +83,18 @@ public class ArquivoMD5 {
 
 			String[] dados = linha.split(";");
 			// String caminhoPasta, String caminhoLiteral, String hashFile, File file
-			content.add(new ArquivoTxt(dados[1].toString(), dados[0].toString(), dados[2].toString(), null,
+			content.add(new Arquivo(dados[1].toString(), dados[0].toString(), dados[2].toString(), null,
 					dados[3].toString()));
 		}
 		buffer.close();
 		return content;
 	}
 
-	public List<ArquivoTxt> listaCaminhos(File dir) {
+	public List<Arquivo> listaCaminhos(File dir) {
 		// File dir ---> Pasta onde se quer listar os caminhos
-		List<ArquivoTxt> fileTree = new ArrayList<ArquivoTxt>();
+		List<Arquivo> fileTree = new ArrayList<Arquivo>();
 		if (dir == null || dir.listFiles() == null) {
-			List<ArquivoTxt> fileTree2 = (List<ArquivoTxt>) fileTree;
+			List<Arquivo> fileTree2 = (List<Arquivo>) fileTree;
 			return fileTree2;
 		}
 		for (File entry : dir.listFiles()) {
@@ -106,11 +106,11 @@ public class ArquivoMD5 {
 				} else {
 					dados = entry.getAbsolutePath().split(File.separator + NOME_PASTA_APLICACAO);
 				}
-				fileTree.add(new ArquivoTxt(dados[1], entry.getAbsolutePath(), "", entry, entry.getName()));
+				fileTree.add(new Arquivo(dados[1], entry.getAbsolutePath(), "", entry, entry.getName()));
 			} else
 				fileTree.addAll(listaCaminhos(entry));
 		}
-		return (List<ArquivoTxt>) fileTree;
+		return (List<Arquivo>) fileTree;
 	}
 
 	public String geraHash(File f) throws NoSuchAlgorithmException, FileNotFoundException {
@@ -118,28 +118,28 @@ public class ArquivoMD5 {
 		return date;
 	}
 
-	public List<ArquivoTxt> excluirArquivos(List<ArquivoTxt> listaServidor, List<ArquivoTxt> listacliente) {
-		List<ArquivoTxt> arqExlusao = new ArrayList<ArquivoTxt>();
+	public List<Arquivo> excluirArquivos(List<Arquivo> listaServidor, List<Arquivo> listacliente) {
+		List<Arquivo> arqExlusao = new ArrayList<Arquivo>();
 		for (int i = 0; i < listacliente.size(); i++) {
 			if (!listaServidor.contains(listacliente.get(i))) {
-				arqExlusao.add(new ArquivoTxt(listacliente.get(i).getCaminhoPasta(), "", "", null, ""));
+				arqExlusao.add(new Arquivo(listacliente.get(i).getCaminhoPasta(), "", "", null, ""));
 			}
 		}
 		return arqExlusao;
 	}
 
-	public List<ArquivoTxt> adiconarArquivos(List<ArquivoTxt> listaServidor, List<ArquivoTxt> listacliente) {
-		List<ArquivoTxt> arqAdicionar = new ArrayList<ArquivoTxt>();
+	public List<Arquivo> adiconarArquivos(List<Arquivo> listaServidor, List<Arquivo> listacliente) {
+		List<Arquivo> arqAdicionar = new ArrayList<Arquivo>();
 		for (int i = 0; i < listacliente.size(); i++) {
 			if (!listacliente.contains(listaServidor.get(i))) {
-				arqAdicionar.add(new ArquivoTxt(listaServidor.get(i).getCaminhoPasta(), "", "", null, ""));
+				arqAdicionar.add(new Arquivo(listaServidor.get(i).getCaminhoPasta(), "", "", null, ""));
 			}
 		}
 		return arqAdicionar;
 	}
 
-	public List<ArquivoTxt> comparaListas(List<ArquivoTxt> listaServidor, List<ArquivoTxt> listacliente) {
-		List<ArquivoTxt> arqEnvio = new ArrayList<ArquivoTxt>();
+	public List<Arquivo> comparaListas(List<Arquivo> listaServidor, List<Arquivo> listacliente) {
+		List<Arquivo> arqEnvio = new ArrayList<Arquivo>();
 		for (int i = 0; i < listacliente.size(); i++) {
 			if (listacliente.contains(listaServidor.get(i))) {
 				for (int j = 0; j < listacliente.size(); j++) {

@@ -2,7 +2,7 @@ package atualizeme.model;
 
 import java.io.File;
 
-public class ArquivoTxt {
+public class Arquivo {
 
 	private String caminhoPasta;
 	private String caminhoLiteral;
@@ -10,7 +10,7 @@ public class ArquivoTxt {
 	private File file;
 	private String nome;
 
-	public ArquivoTxt(String caminhoPasta, String caminhoLiteral, String hashFile, File file, String nome) {
+	public Arquivo(String caminhoPasta, String caminhoLiteral, String hashFile, File file, String nome) {
 		this.caminhoPasta = caminhoPasta;
 		this.caminhoLiteral = caminhoLiteral;
 		this.hashFile = hashFile;
@@ -60,7 +60,7 @@ public class ArquivoTxt {
 
 	@Override
 	public boolean equals(Object arquivo) {
-		if (this.getCaminhoPasta().equals(((ArquivoTxt) arquivo).getCaminhoPasta())) {
+		if (this.getCaminhoPasta().equals(((Arquivo) arquivo).getCaminhoPasta())) {
 			return true;
 		}
 		return false;
