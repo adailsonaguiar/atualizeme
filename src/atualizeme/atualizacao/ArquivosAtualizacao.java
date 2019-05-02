@@ -19,7 +19,7 @@ public class ArquivosAtualizacao {
 	private String caminhoAplicacao;
 
 	public static void main(String[] args) throws NoSuchAlgorithmException, IOException {
-
+		System.out.println(System.getProperty("os.name").toUpperCase());
 	}
 
 	public String getNome() {
@@ -92,25 +92,23 @@ public class ArquivosAtualizacao {
 
 	public List<Arquivo> listaCaminhos(File dir) {
 		// File dir ---> Pasta onde se quer listar os caminhos
-		List<Arquivo> fileTree = new ArrayList<Arquivo>();
+		List<Arquivo> caminhos = new ArrayList<Arquivo>();
 		if (dir == null || dir.listFiles() == null) {
-			List<Arquivo> fileTree2 = (List<Arquivo>) fileTree;
-			return fileTree2;
+			return null;
 		}
-		for (File entry : dir.listFiles()) {
-			if (entry.isFile()) {
+		for (File file : dir.listFiles()) {
+			if (file.isFile()) {
 				String[] dados = null;
-				String os = System.getProperty("os.name");
-				if (os.contains("Windows")) {
-					dados = entry.getAbsolutePath().split(NOME_PASTA_APLICACAO + File.separator + File.separator);
+				if (System.getProperty("os.name").toUpperCase().contains("WINDOWS")) {
+					dados = file.getAbsolutePath().split(NOME_PASTA_APLICACAO + File.separator + File.separator);
 				} else {
-					dados = entry.getAbsolutePath().split(File.separator + NOME_PASTA_APLICACAO);
+					dados = file.getAbsolutePath().split(NOME_PASTA_APLICACAO + File.separator);
 				}
-				fileTree.add(new Arquivo(dados[1], entry.getAbsolutePath(), "", entry, entry.getName()));
+				caminhos.add(new Arquivo(dados[1], file.getAbsolutePath(), "", file, file.getName()));
 			} else
-				fileTree.addAll(listaCaminhos(entry));
+				caminhos.addAll(listaCaminhos(file));
 		}
-		return (List<Arquivo>) fileTree;
+		return (List<Arquivo>) caminhos;
 	}
 
 	public String geraHash(File f) throws NoSuchAlgorithmException, FileNotFoundException {
