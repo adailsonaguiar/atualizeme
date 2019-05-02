@@ -100,10 +100,11 @@ public class ArquivosAtualizacao {
 			if (file.isFile()) {
 				String[] dados = null;
 				if (System.getProperty("os.name").toUpperCase().contains("WINDOWS")) {
-					dados = file.getAbsolutePath().split(NOME_PASTA_APLICACAO + File.separator + File.separator);
+					dados = file.getParent().split(File.separator + File.separator + NOME_PASTA_APLICACAO);
 				} else {
-					dados = file.getAbsolutePath().split(NOME_PASTA_APLICACAO + File.separator);
+					dados = file.getParent().split(File.separator + NOME_PASTA_APLICACAO);
 				}
+				System.out.println(dados[1]);
 				caminhos.add(new Arquivo(dados[1], file.getAbsolutePath(), "", file, file.getName()));
 			} else
 				caminhos.addAll(listaCaminhos(file));
@@ -115,41 +116,4 @@ public class ArquivosAtualizacao {
 		String date = "" + f.lastModified();
 		return date;
 	}
-
-	public List<Arquivo> excluirArquivos(List<Arquivo> listaServidor, List<Arquivo> listacliente) {
-		List<Arquivo> arqExlusao = new ArrayList<Arquivo>();
-		for (int i = 0; i < listacliente.size(); i++) {
-			if (!listaServidor.contains(listacliente.get(i))) {
-				arqExlusao.add(new Arquivo(listacliente.get(i).getCaminhoPasta(), "", "", null, ""));
-			}
-		}
-		return arqExlusao;
-	}
-
-	public List<Arquivo> adiconarArquivos(List<Arquivo> listaServidor, List<Arquivo> listacliente) {
-		List<Arquivo> arqAdicionar = new ArrayList<Arquivo>();
-		for (int i = 0; i < listacliente.size(); i++) {
-			if (!listacliente.contains(listaServidor.get(i))) {
-				arqAdicionar.add(new Arquivo(listaServidor.get(i).getCaminhoPasta(), "", "", null, ""));
-			}
-		}
-		return arqAdicionar;
-	}
-
-	public List<Arquivo> comparaListas(List<Arquivo> listaServidor, List<Arquivo> listacliente) {
-		List<Arquivo> arqEnvio = new ArrayList<Arquivo>();
-		for (int i = 0; i < listacliente.size(); i++) {
-			if (listacliente.contains(listaServidor.get(i))) {
-				for (int j = 0; j < listacliente.size(); j++) {
-					if (listacliente.get(j).getCaminhoPasta().equals(listaServidor.get(i).getCaminhoPasta())) {
-						if (!listacliente.get(j).getHashFile().equals(listaServidor.get(i).getHashFile())) {
-							arqEnvio.add(listacliente.get(j));
-						}
-					}
-				}
-			}
-		}
-		return arqEnvio;
-	}
-
 }
