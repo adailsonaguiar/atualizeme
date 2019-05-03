@@ -37,11 +37,11 @@ public class Update {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@javax.ws.rs.Produces({ "application/json" })
 	public Response baixarArquivoVerificacao() throws NoSuchAlgorithmException, IOException {
-		ArquivosAtualizacao md5 = new ArquivosAtualizacao();
-		md5.setNome("MD5.txt");
-		md5.setPastaAplicacao(caminhoAplicacao);
-		md5.arquivomd5(md5.getPastaAplicacao(), md5.getNome());
-		File file = new File(caminhoAplicacao + md5.getNome());
+		ArquivosAtualizacao arquivoAtualizacao = new ArquivosAtualizacao();
+		arquivoAtualizacao.setNome("MD5.txt");
+		arquivoAtualizacao.setPastaAplicacao(caminhoAplicacao);
+		arquivoAtualizacao.arquivomd5(arquivoAtualizacao.getPastaAplicacao(), arquivoAtualizacao.getNome());
+		File file = new File(caminhoAplicacao + arquivoAtualizacao.getNome());
 		ResponseBuilder response = Response.ok((Object) file);
 		return response.status(Status.OK).build();
 	}
@@ -51,12 +51,12 @@ public class Update {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@javax.ws.rs.Produces({ "application/json" })
 	public Response verificarAtualizacao() throws NoSuchAlgorithmException, IOException {
-		ArquivosAtualizacao md5 = new ArquivosAtualizacao();
-		md5.setNome("MD5.txt");
-		md5.setPastaAplicacao(caminhoAplicacao);
-		md5.arquivomd5(md5.getPastaAplicacao(), md5.getNome());
+		ArquivosAtualizacao arquivoAtualizacao = new ArquivosAtualizacao();
+		arquivoAtualizacao.setNome("MD5.txt");
+		arquivoAtualizacao.setPastaAplicacao(caminhoAplicacao);
+		arquivoAtualizacao.arquivomd5(arquivoAtualizacao.getPastaAplicacao(), arquivoAtualizacao.getNome());
 
-		List<Arquivo> listaServidor = md5.readFile(md5.getPastaAplicacao() + md5.getNome());
+		List<Arquivo> listaServidor = arquivoAtualizacao.readFile(arquivoAtualizacao.getPastaAplicacao() + arquivoAtualizacao.getNome());
 		String json = new Gson().toJson(listaServidor);
 		String strListaServidor = Base64.getEncoder().encodeToString(json.getBytes());
 
