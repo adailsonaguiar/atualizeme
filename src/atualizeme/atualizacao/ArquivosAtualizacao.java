@@ -20,22 +20,11 @@ public class ArquivosAtualizacao {
 
 	public static void main(String[] args) throws NoSuchAlgorithmException, IOException {
 		System.out.println(System.getProperty("os.name").toUpperCase());
-	}
-
-	public String getNome() {
-		return nome;
-	}
-
-	public void setNome(String nome) {
-		ArquivosAtualizacao.nome = nome;
-	}
-
-	public String getPastaAplicacao() {
-		return caminhoAplicacao;
-	}
-
-	public void setPastaAplicacao(String pastaAplicacao) {
-		this.caminhoAplicacao = pastaAplicacao;
+		File file = new File("/home/adailson/Downloads/aaa/Grupo Familiar_05_02.pdf");
+		String[] dados = file.getParent().split(File.separator + "Downloads");
+		if (dados.length > 1) {
+			System.out.println(dados[1]);
+		}
 	}
 
 	public void arquivomd5(String caminhoMD5, String nomeMD5)
@@ -104,8 +93,12 @@ public class ArquivosAtualizacao {
 				} else {
 					dados = file.getParent().split(File.separator + NOME_PASTA_APLICACAO);
 				}
-				System.out.println(dados[1]);
-				caminhos.add(new Arquivo(dados[1], file.getAbsolutePath(), "", file, file.getName()));
+				if (dados.length > 1) {
+					caminhos.add(
+							new Arquivo(dados[1] + File.separator, file.getAbsolutePath(), "", file, file.getName()));
+				} else {
+					caminhos.add(new Arquivo(File.separator, file.getAbsolutePath(), "", file, file.getName()));
+				}
 			} else
 				caminhos.addAll(listaCaminhos(file));
 		}
@@ -115,5 +108,21 @@ public class ArquivosAtualizacao {
 	public String geraHash(File f) throws NoSuchAlgorithmException, FileNotFoundException {
 		String date = "" + f.lastModified();
 		return date;
+	}
+
+	public String getNome() {
+		return nome;
+	}
+
+	public void setNome(String nome) {
+		ArquivosAtualizacao.nome = nome;
+	}
+
+	public String getPastaAplicacao() {
+		return caminhoAplicacao;
+	}
+
+	public void setPastaAplicacao(String pastaAplicacao) {
+		this.caminhoAplicacao = pastaAplicacao;
 	}
 }

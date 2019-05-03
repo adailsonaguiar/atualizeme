@@ -66,14 +66,16 @@ public class Update {
 	}
 
 	@javax.ws.rs.GET
-	@Path("/getarquivo/{caminhoPasta}")
+	@Path("/getarquivo/{caminhoPasta}/{nome}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@javax.ws.rs.Produces({ "application/json" })
-	public Response enviarArquivo(@PathParam("caminhoPasta") String caminhoPasta)
+	public Response enviarArquivo(@PathParam("caminhoPasta") String caminhoPasta, @PathParam("nome") String nome)
 			throws NoSuchAlgorithmException, IOException {
-		byte[] decodedBytes = Base64.getDecoder().decode(caminhoPasta);
-		String decodedString = new String(decodedBytes);
-		File file = new File(caminhoAplicacao + decodedString);
+		byte[] caminhoBytes = Base64.getDecoder().decode(caminhoPasta);
+		String caminho = new String(caminhoBytes);
+		byte[] nomeBytes = Base64.getDecoder().decode(nome);
+		String nomeArq = new String(nomeBytes);
+		File file = new File(caminhoAplicacao + caminho + nomeArq);
 		ResponseBuilder response = Response.ok((Object) file);
 		return response.status(Status.OK).build();
 	}
