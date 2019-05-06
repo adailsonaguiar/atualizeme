@@ -24,7 +24,7 @@ import com.google.gson.Gson;
 @Path("update")
 public class Update {
 
-	private static String caminhoAplicacao = System.getProperty("user.home") + File.separator + "oias" + File.separator;
+	private static String caminhoAplicacao = "C:\\xampp\\htdocs\\sicap\\";
 
 	@GET
 	@Produces(MediaType.TEXT_PLAIN)
@@ -56,13 +56,11 @@ public class Update {
 		arquivoAtualizacao.setPastaAplicacao(caminhoAplicacao);
 		arquivoAtualizacao.arquivomd5(arquivoAtualizacao.getPastaAplicacao(), arquivoAtualizacao.getNome());
 
-		List<Arquivo> listaServidor = arquivoAtualizacao.readFile(arquivoAtualizacao.getPastaAplicacao() + arquivoAtualizacao.getNome());
+		List<Arquivo> listaServidor = arquivoAtualizacao
+				.readFile(arquivoAtualizacao.getPastaAplicacao() + arquivoAtualizacao.getNome());
 		String json = new Gson().toJson(listaServidor);
-		String strListaServidor = Base64.getEncoder().encodeToString(json.getBytes());
 
-		ResponseBuilder response = Response.ok();
-
-		return response.status(Status.OK).header("listaServidor", strListaServidor).build();
+		return Response.ok(json).build();
 	}
 
 	@javax.ws.rs.GET

@@ -14,17 +14,11 @@ import atualizeme.model.Arquivo;
 
 public class ArquivosAtualizacao {
 
-	private static String NOME_PASTA_APLICACAO = "oias";
+	private static String NOME_PASTA_APLICACAO = "sicap";
 	private static String nome;
 	private String caminhoAplicacao;
 
 	public static void main(String[] args) throws NoSuchAlgorithmException, IOException {
-		System.out.println(System.getProperty("os.name").toUpperCase());
-		File file = new File("/home/adailson/Downloads/aaa/Grupo Familiar_05_02.pdf");
-		String[] dados = file.getParent().split(File.separator + "Downloads");
-		if (dados.length > 1) {
-			System.out.println(dados[1]);
-		}
 	}
 
 	public void arquivomd5(String caminhoMD5, String nomeMD5)
