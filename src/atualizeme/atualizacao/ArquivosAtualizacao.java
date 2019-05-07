@@ -83,15 +83,14 @@ public class ArquivosAtualizacao {
 			if (file.isFile()) {
 				String[] dados = null;
 				if (System.getProperty("os.name").toUpperCase().contains("WINDOWS")) {
-					dados = file.getParent().split(File.separator + File.separator + NOME_PASTA_APLICACAO);
+					dados = file.getParent().split(NOME_PASTA_APLICACAO + File.separator + File.separator);
 				} else {
-					dados = file.getParent().split(File.separator + NOME_PASTA_APLICACAO);
+					dados = file.getParent().split(NOME_PASTA_APLICACAO + File.separator);
 				}
 				if (dados.length > 1) {
-					caminhos.add(
-							new Arquivo(dados[1] + File.separator, file.getAbsolutePath(), "", file, file.getName()));
+					caminhos.add(new Arquivo(dados[1] + "/", file.getAbsolutePath(), "", file, file.getName()));
 				} else {
-					caminhos.add(new Arquivo(File.separator, file.getAbsolutePath(), "", file, file.getName()));
+					caminhos.add(new Arquivo("", file.getAbsolutePath(), "", file, file.getName()));
 				}
 			} else
 				caminhos.addAll(listaCaminhos(file));
