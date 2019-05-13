@@ -21,22 +21,22 @@ public class ArquivosAtualizacao {
 	public static void main(String[] args) throws NoSuchAlgorithmException, IOException {
 	}
 
-	public void arquivomd5(String caminhoMD5, String nomeMD5)
-			throws NoSuchAlgorithmException, FileNotFoundException, IOException {
-		File md5 = new File(caminhoMD5 + nomeMD5);
+	public void arquivomd5() throws NoSuchAlgorithmException, FileNotFoundException, IOException {
+		File md5 = new File(getPastaAplicacao() + getNome());
 		if (!md5.exists()) {
 			List<Arquivo> lista = listaCaminhos(new File(caminhoAplicacao));
 			for (int i = 0; i < lista.size(); i++) {
-				writeFile(caminhoMD5, nomeMD5, lista.get(i).getCaminhoLiteral(), lista.get(i).getCaminhoPasta(),
-						geraHash(new File(lista.get(i).getCaminhoLiteral())), lista.get(i).getNome());
+				writeFile(getPastaAplicacao(), getNome(), lista.get(i).getCaminhoLiteral(),
+						lista.get(i).getCaminhoPasta(), geraHash(new File(lista.get(i).getCaminhoLiteral())),
+						lista.get(i).getNome());
 			}
 		} else if (md5.delete()) {
 			List<Arquivo> lista = listaCaminhos(new File(caminhoAplicacao));
 			for (int i = 0; i < lista.size(); i++) {
-				writeFile(caminhoMD5, nomeMD5, lista.get(i).getCaminhoLiteral(), lista.get(i).getCaminhoPasta(),
-						geraHash(new File(lista.get(i).getCaminhoLiteral())), lista.get(i).getNome());
+				writeFile(getPastaAplicacao(), getNome(), lista.get(i).getCaminhoLiteral(),
+						lista.get(i).getCaminhoPasta(), geraHash(new File(lista.get(i).getCaminhoLiteral())),
+						lista.get(i).getNome());
 			}
-
 		}
 	}
 
@@ -90,7 +90,7 @@ public class ArquivosAtualizacao {
 				if (dados.length > 1) {
 					caminhos.add(new Arquivo(dados[1] + "/", file.getAbsolutePath(), "", file, file.getName()));
 				} else {
-					caminhos.add(new Arquivo("", file.getAbsolutePath(), "", file, file.getName()));
+					caminhos.add(new Arquivo("/", file.getAbsolutePath(), "", file, file.getName()));
 				}
 			} else
 				caminhos.addAll(listaCaminhos(file));

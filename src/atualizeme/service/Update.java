@@ -24,7 +24,9 @@ import com.google.gson.Gson;
 @Path("update")
 public class Update {
 
-	private static String caminhoAplicacao = "C:\\xampp\\htdocs\\sicap\\";
+	// private static String caminhoAplicacao = "C:\\xampp\\htdocs\\sicap\\";
+//	/opt/lampp/htdocs/sicap/
+	private static String caminhoAplicacao = "/opt/lampp/htdocs/sicap/";
 
 	@GET
 	@Produces(MediaType.TEXT_PLAIN)
@@ -40,7 +42,7 @@ public class Update {
 		ArquivosAtualizacao arquivoAtualizacao = new ArquivosAtualizacao();
 		arquivoAtualizacao.setNome("MD5.txt");
 		arquivoAtualizacao.setPastaAplicacao(caminhoAplicacao);
-		arquivoAtualizacao.arquivomd5(arquivoAtualizacao.getPastaAplicacao(), arquivoAtualizacao.getNome());
+		arquivoAtualizacao.arquivomd5();
 		File file = new File(caminhoAplicacao + arquivoAtualizacao.getNome());
 		ResponseBuilder response = Response.ok((Object) file);
 		return response.status(Status.OK).build();
@@ -54,7 +56,7 @@ public class Update {
 		ArquivosAtualizacao arquivoAtualizacao = new ArquivosAtualizacao();
 		arquivoAtualizacao.setNome("MD5.txt");
 		arquivoAtualizacao.setPastaAplicacao(caminhoAplicacao);
-		arquivoAtualizacao.arquivomd5(arquivoAtualizacao.getPastaAplicacao(), arquivoAtualizacao.getNome());
+		arquivoAtualizacao.arquivomd5();
 
 		List<Arquivo> listaServidor = arquivoAtualizacao
 				.readFile(arquivoAtualizacao.getPastaAplicacao() + arquivoAtualizacao.getNome());
