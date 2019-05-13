@@ -14,26 +14,26 @@ import atualizeme.model.Arquivo;
 
 public class ArquivosAtualizacao {
 
-	private static String NOME_PASTA_APLICACAO = "sicap";
-	private static String nome;
+	public static String NOME_ARQUIVO_VERIFICACAO = "MD5.txt";
+	private String nomePastaAplicacao;
 	private String caminhoAplicacao;
 
 	public static void main(String[] args) throws NoSuchAlgorithmException, IOException {
 	}
 
 	public void arquivomd5() throws NoSuchAlgorithmException, FileNotFoundException, IOException {
-		File md5 = new File(getPastaAplicacao() + getNome());
+		File md5 = new File(getCaminhoAplicacao() + NOME_ARQUIVO_VERIFICACAO);
 		if (!md5.exists()) {
 			List<Arquivo> lista = listaCaminhos(new File(caminhoAplicacao));
 			for (int i = 0; i < lista.size(); i++) {
-				writeFile(getPastaAplicacao(), getNome(), lista.get(i).getCaminhoLiteral(),
+				writeFile(getCaminhoAplicacao(), NOME_ARQUIVO_VERIFICACAO, lista.get(i).getCaminhoLiteral(),
 						lista.get(i).getCaminhoPasta(), geraHash(new File(lista.get(i).getCaminhoLiteral())),
 						lista.get(i).getNome());
 			}
 		} else if (md5.delete()) {
 			List<Arquivo> lista = listaCaminhos(new File(caminhoAplicacao));
 			for (int i = 0; i < lista.size(); i++) {
-				writeFile(getPastaAplicacao(), getNome(), lista.get(i).getCaminhoLiteral(),
+				writeFile(getCaminhoAplicacao(), NOME_ARQUIVO_VERIFICACAO, lista.get(i).getCaminhoLiteral(),
 						lista.get(i).getCaminhoPasta(), geraHash(new File(lista.get(i).getCaminhoLiteral())),
 						lista.get(i).getNome());
 			}
@@ -82,7 +82,7 @@ public class ArquivosAtualizacao {
 		for (File file : dir.listFiles()) {
 			if (file.isFile()) {
 				String[] dados = null;
-				dados = file.getParent().split(NOME_PASTA_APLICACAO, 2);
+				dados = file.getParent().split(nomePastaAplicacao, 2);
 				if (dados.length > 1) {
 					caminhos.add(
 							new Arquivo(dados[1] + File.separator, file.getAbsolutePath(), "", file, file.getName()));
@@ -100,19 +100,19 @@ public class ArquivosAtualizacao {
 		return date;
 	}
 
-	public String getNome() {
-		return nome;
+	public String getNomePastaAplicacao() {
+		return nomePastaAplicacao;
 	}
 
-	public void setNome(String nome) {
-		ArquivosAtualizacao.nome = nome;
+	public void setNomePastaAplicacao(String nomePastaAplicacao) {
+		this.nomePastaAplicacao = nomePastaAplicacao;
 	}
 
-	public String getPastaAplicacao() {
+	public String getCaminhoAplicacao() {
 		return caminhoAplicacao;
 	}
 
-	public void setPastaAplicacao(String pastaAplicacao) {
-		this.caminhoAplicacao = pastaAplicacao;
+	public void setCaminhoAplicacao(String caminhoAplicacao) {
+		this.caminhoAplicacao = caminhoAplicacao;
 	}
 }

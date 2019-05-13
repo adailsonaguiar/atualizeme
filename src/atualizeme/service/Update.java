@@ -11,8 +11,6 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
@@ -26,8 +24,8 @@ import com.google.gson.Gson;
 @Path("update")
 public class Update {
 
-	private static String CAMINHO_APLICACAO = "C:\\xampp\\htdocs\\sicap\\";
-//	private static String caminhoAplicacao = "/opt/lampp/htdocs/sicap/";
+//	private static String CAMINHO_APLICACAO = "C:\\xampp\\htdocs\\sicap\\";
+	private static String CAMINHO_APLICACAO = "/opt/lampp/htdocs/sicap/";
 
 	public static void main(String... args) {
 
@@ -61,10 +59,10 @@ public class Update {
 	@javax.ws.rs.Produces({ "application/json" })
 	public Response baixarArquivoVerificacao() throws NoSuchAlgorithmException, IOException {
 		ArquivosAtualizacao arquivoAtualizacao = new ArquivosAtualizacao();
-		arquivoAtualizacao.setNome("MD5.txt");
-		arquivoAtualizacao.setPastaAplicacao(CAMINHO_APLICACAO);
+		arquivoAtualizacao.setCaminhoAplicacao(CAMINHO_APLICACAO);
+		arquivoAtualizacao.setNomePastaAplicacao("sicap");
 		arquivoAtualizacao.arquivomd5();
-		File file = new File(CAMINHO_APLICACAO + arquivoAtualizacao.getNome());
+		File file = new File(CAMINHO_APLICACAO + ArquivosAtualizacao.NOME_ARQUIVO_VERIFICACAO);
 		ResponseBuilder response = Response.ok((Object) file);
 		return response.status(Status.OK).build();
 	}
@@ -75,12 +73,12 @@ public class Update {
 	@javax.ws.rs.Produces({ "application/json" })
 	public Response verificarAtualizacao() throws NoSuchAlgorithmException, IOException {
 		ArquivosAtualizacao arquivoAtualizacao = new ArquivosAtualizacao();
-		arquivoAtualizacao.setNome("MD5.txt");
-		arquivoAtualizacao.setPastaAplicacao(CAMINHO_APLICACAO);
+		arquivoAtualizacao.setCaminhoAplicacao(CAMINHO_APLICACAO);
+		arquivoAtualizacao.setNomePastaAplicacao("sicap");
 		arquivoAtualizacao.arquivomd5();
 
 		List<Arquivo> listaServidor = arquivoAtualizacao
-				.readFile(arquivoAtualizacao.getPastaAplicacao() + arquivoAtualizacao.getNome());
+				.readFile(arquivoAtualizacao.getCaminhoAplicacao() + ArquivosAtualizacao.NOME_ARQUIVO_VERIFICACAO);
 		String json = new Gson().toJson(listaServidor);
 
 		return Response.ok(json).build();
